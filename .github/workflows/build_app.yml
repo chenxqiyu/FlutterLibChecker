@@ -44,12 +44,20 @@ jobs:
       # Gradle 会自动处理 Hilt (KSP) 代码生成和 SDK 下载
       - name: 🏗️ Build with Gradle
         run: ./gradlew assembleDebug --stacktrace
-
-      # 6. 上传 APK 产物
-      - name: ⬆️ Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: FlutterLibChecker-Debug
-          # 根据 Gradle 标准输出路径
-          path: app/build/outputs/apk/debug/*.apk
-          retention-days: 7
+        
+      - name: 发布apk
+        run: |
+          TAG="build-${{ github.run_id }}"
+          gh release create "$TAG" --target "${{ github.sha }}" --title "Build ${{ github.run_id }}"
+          gh release upload "$TAG" app/build/outputs/apk/debug/*.apk
+          # gh release upload "$TAG" dist/openlink_*.tar.gz dist/openlink_*.zip || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # # 6. 上传 APK 产物
+      # - name: ⬆️ Upload APK Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: FlutterLibChecker-Debug
+      #     # 根据 Gradle 标准输出路径
+      #     path: app/build/outputs/apk/debug/*.apk
+      #     retention-days: 7
