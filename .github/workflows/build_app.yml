@@ -6,7 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     env:
       # 项目使用了 Android Gradle Plugin 8.x+，必须使用 Java 17
       JAVA_VERSION: '17'
